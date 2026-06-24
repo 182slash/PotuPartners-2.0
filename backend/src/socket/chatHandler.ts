@@ -1,7 +1,7 @@
 import type { Server, Socket } from 'socket.io';
 import { verifyAccessToken } from '../utils/auth';
 import { createMessage, softDeleteMessage, markConversationRead } from '../modules/messages/messages.service';
-import { getConversationById, generateRoomKey } from '../modules/conversations/conversations.service';
+import { getConversationById } from '../modules/conversations/conversations.service';
 import { listMessages } from '../modules/messages/messages.service';
 import { query } from '../config/database';
 import { queryAi } from '../modules/admin/ai.service';
@@ -226,7 +226,7 @@ async function processAiResponse(
   message:        string,
 ): Promise<void> {
   try {
-    const result = await queryAi(conversationId, userId, message);
+    await queryAi(conversationId, userId, message);
 
     // queryAi already persists the AI message — just broadcast it
     // Fetch the persisted message to get full structure

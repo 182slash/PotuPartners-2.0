@@ -2,7 +2,7 @@ import type { Request, Response } from 'express';
 import asyncHandler from 'express-async-handler';
 import * as authService from './auth.service';
 import { REFRESH_COOKIE_NAME, refreshCookieOptions } from '../../utils/auth';
-import { env } from '../../config/env';
+// unused: import { env } from '../../config/env';
 
 // POST /api/auth/register
 export const register = asyncHandler(async (req: Request, res: Response) => {

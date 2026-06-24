@@ -2,9 +2,9 @@ import type { Request, Response } from 'express';
 import asyncHandler from 'express-async-handler';
 import { Router } from 'express';
 import * as svc from './users.service';
-import { requireAuth, requireAdmin } from '../../middleware/auth.middleware';
+import { requireAuth } from '../../middleware/auth.middleware';
 import { validate, updateUserSchema } from '../../utils/validators';
-import { Errors } from '../../utils/errors';
+// unused: import { Errors } from '../../utils/errors';
 
 // ─── Handlers ─────────────────────────────────────────────────────────────────
 

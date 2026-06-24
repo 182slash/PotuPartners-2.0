@@ -11,7 +11,7 @@ import { env } from '../../config/env';
 import { logger } from '../../utils/logger';
 import { v4 as uuidv4 } from 'uuid';
 import type { DBRagDocument } from '../../types';
-import * as userSvc from '../users/users.service';
+// unused: import * as userSvc from '../users/users.service';
 
 // ─── List RAG documents ───────────────────────────────────────────────────────
 export async function listDocuments(): Promise<DBRagDocument[]> {
@@ -28,7 +28,7 @@ export async function listDocuments(): Promise<DBRagDocument[]> {
 export async function uploadDocument(
   buffer:      Buffer,
   originalName: string,
-  declaredMime: string,
+  _declaredMime: string,
   title:       string,
   description: string | undefined,
   uploaderId:  string,

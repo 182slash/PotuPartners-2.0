@@ -25,7 +25,7 @@ import adminRoutes         from './modules/admin/admin.routes';
 import aiRoutes            from './modules/admin/ai.routes';
 
 import { registerChatHandlers } from './socket/chatHandler';
-import { authenticate }         from './middleware/auth.middleware';
+import { requireAuth as authenticate }         from './middleware/auth.middleware';
 
 // ─── App setup ────────────────────────────────────────────────────────────────
 const app    = express();

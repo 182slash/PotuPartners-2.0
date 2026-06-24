@@ -32,4 +32,3 @@ messagesRouter.delete('/:id', requireAuth, remove);
 export const convMessagesRouter = Router({ mergeParams: true });
 convMessagesRouter.get('/', requireAuth, validate(paginationSchema as any, 'query'), list);
 export default messagesRouter;
-potupartners@potupartners-api:/opt/potupartners/backend$

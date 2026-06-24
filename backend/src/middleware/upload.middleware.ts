@@ -1,5 +1,5 @@
 import multer from 'multer';
-import { fromBuffer } from 'file-type';
+import { fileTypeFromBuffer as fromBuffer } from 'file-type';
 import type { Request } from 'express';
 import {
   ALLOWED_CHAT_MIME_TYPES,

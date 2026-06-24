@@ -9,14 +9,14 @@ import { validateFileMagicBytes } from '../../middleware/upload.middleware';
 import { Errors }   from '../../utils/errors';
 import { v4 as uuidv4 } from 'uuid';
 import fs   from 'fs';
-import path from 'path';
+// unused: import path from 'path';
 import type { DBFile } from '../../types';
 
 // ─── Upload chat attachment ───────────────────────────────────────────────────
 export async function uploadChatFile(
   buffer:         Buffer,
   originalName:   string,
-  declaredMime:   string,
+  _declaredMime:   string,
   conversationId: string,
   uploaderId:     string,
 ): Promise<DBFile> {
