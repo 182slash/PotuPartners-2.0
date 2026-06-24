@@ -1,0 +1,30 @@
+fastapi==0.111.0
+uvicorn[standard]==0.29.0
+gunicorn==22.0.0
+pydantic==2.7.3
+pydantic-settings==2.3.1
+python-multipart==0.0.9
+httpx==0.27.0
+
+# LLM & Embeddings
+openai==1.35.3
+langchain==0.2.5
+langchain-openai==0.1.12
+langchain-community==0.2.5
+
+# Document parsing
+pymupdf==1.24.5
+python-docx==1.1.2
+
+# Vector store
+chromadb==0.5.3
+
+# AWS (DigitalOcean Spaces)
+boto3==1.34.131
+botocore==1.34.131
+
+# Text processing
+tiktoken==0.7.0
+
+# Logging
+structlog==24.2.0

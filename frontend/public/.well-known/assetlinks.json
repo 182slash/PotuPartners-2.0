@@ -1,0 +1,12 @@
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "site.potupartners.app",
+      "sha256_cert_fingerprints": [
+        "3D:AE:43:90:E7:DC:D5:29:34:1F:12:DD:D7:C6:FC:68:62:EB:0B:4E:FF:3F:13:EF:60:9E:55:A8:64:0D:D7:73"
+      ]
+    }
+  }
+]

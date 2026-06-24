@@ -1,0 +1,64 @@
+name: CI Frontend → Vercel
+
+# Vercel auto-deploys on every push via its GitHub integration.
+# This workflow handles CI checks ONLY (type-check + lint).
+# Vercel will NOT deploy if this workflow fails (see Branch Protection Rules).
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'frontend/**'
+      - '.github/workflows/deploy-frontend.yml'
+
+  pull_request:
+    branches: [main]
+    paths:
+      - 'frontend/**'
+
+  workflow_dispatch:
+
+concurrency:
+  group: ci-frontend-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  check:
+    name: Type Check & Lint
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Install dependencies
+        working-directory: frontend
+        run: npm ci
+
+      - name: TypeScript type check
+        working-directory: frontend
+        run: npx tsc --noEmit
+
+      - name: ESLint
+        working-directory: frontend
+        run: npm run lint
+
+      - name: Write summary
+        if: always()
+        run: |
+          echo "## Frontend CI" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Check | Status |" >> $GITHUB_STEP_SUMMARY
+          echo "|-------|--------|" >> $GITHUB_STEP_SUMMARY
+          echo "| TypeScript | ${{ job.status }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| ESLint | ${{ job.status }} |" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "Vercel deploy is triggered automatically by the GitHub integration." >> $GITHUB_STEP_SUMMARY
+          echo "Track it at: https://vercel.com/dashboard" >> $GITHUB_STEP_SUMMARY

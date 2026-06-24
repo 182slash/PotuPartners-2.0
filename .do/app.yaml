@@ -1,0 +1,156 @@
+# ─────────────────────────────────────────────────────────────────────────────
+# DigitalOcean App Platform Spec — PotuPartners Backend
+#
+# HOW TO USE:
+#   Option A (GUI): DO Dashboard → Apps → Create App → choose GitHub repo
+#   Option B (CLI): doctl apps create --spec .do/app.yaml
+#   Option C (GUI import): Apps → Settings → App Spec → paste this file
+#
+# This spec uses only DO App Platform features:
+#   • Dev Database  — built-in PostgreSQL (no separate Managed DB needed)
+#   • Volume        — persistent disk for file uploads (no Spaces needed)
+#
+# After creating the app, set SECRET values in:
+#   DO Dashboard → Apps → your app → Settings → Components → api → Environment Variables
+# ─────────────────────────────────────────────────────────────────────────────
+
+name: potupartners-backend
+region: sgp   # Singapore — closest to Indonesia
+
+# ─── Dev Database (built-in PostgreSQL — no separate Managed DB required) ────
+# DO App Platform provisions a basic PostgreSQL instance and injects
+# DATABASE_URL automatically via the ${db.DATABASE_URL} reference below.
+# For production-grade needs (daily backups, standby nodes) you can later
+# upgrade to a Managed Database and update DATABASE_URL accordingly.
+databases:
+  - name: db
+    engine: PG
+    version: "16"
+    production: false   # dev-grade: cheaper, sufficient for most workloads
+
+# ─── Services ────────────────────────────────────────────────────────────────
+services:
+  # ── Node.js REST API + WebSocket ──────────────────────────────────────────
+  - name: api
+    source_dir: backend
+    github:
+      repo: YOUR_GITHUB_USERNAME/PotuPartners   # ← replace with your repo
+      branch: main
+      deploy_on_push: true
+
+    dockerfile_path: backend/Dockerfile
+
+    http_port: 4000
+    instance_count: 1
+    instance_size_slug: apps-s-1vcpu-1gb   # $12/mo — upgrade as needed
+
+    health_check:
+      http_path: /health
+      initial_delay_seconds: 30
+      period_seconds: 30
+      timeout_seconds: 10
+      failure_threshold: 3
+
+    # Run DB migrations then start the server
+    run_command: sh -c "node dist/db/migrate.js && node dist/index.js"
+
+    # ── Persistent volume for file uploads (replaces DO Spaces) ──────────
+    # Files are stored on this disk and served directly by the API.
+    # The volume persists across deploys and restarts.
+    # Pricing: ~$0.10 / GB / month  →  10 GB ≈ $1/mo
+    volumes:
+      - name: uploads
+        mount_path: /workspace/uploads
+        size_bytes: 10737418240   # 10 GB — adjust as your storage needs grow
+
+    # ── Environment variables ──────────────────────────────────────────────
+    envs:
+      - key: NODE_ENV
+        value: production
+        scope: RUN_TIME
+
+      - key: PORT
+        value: "4000"
+        scope: RUN_TIME
+
+      # CORS: update to your actual frontend URL
+      - key: CORS_ORIGIN
+        value: https://potupartners.vercel.app
+        scope: RUN_TIME
+
+      # DATABASE_URL is auto-injected from the dev database above
+      - key: DATABASE_URL
+        value: ${db.DATABASE_URL}
+        scope: RUN_TIME
+
+      # JWT secrets — set values in the DO dashboard
+      - key: JWT_ACCESS_SECRET
+        scope: RUN_TIME
+        type: SECRET
+
+      - key: JWT_REFRESH_SECRET
+        scope: RUN_TIME
+        type: SECRET
+
+      - key: JWT_ACCESS_EXPIRES_IN
+        value: "15m"
+        scope: RUN_TIME
+
+      - key: JWT_REFRESH_EXPIRES_IN
+        value: "7d"
+        scope: RUN_TIME
+
+      # Upload directory — must match the volume mount_path above
+      - key: UPLOAD_DIR
+        value: /workspace/uploads
+        scope: RUN_TIME
+
+      # RAG service internal URL (DO App Platform internal networking)
+      - key: RAG_SERVICE_URL
+        value: http://rag:8000
+        scope: RUN_TIME
+
+      - key: RAG_SERVICE_SECRET
+        scope: RUN_TIME
+        type: SECRET
+
+      - key: LOG_LEVEL
+        value: info
+        scope: RUN_TIME
+
+      - key: BCRYPT_ROUNDS
+        value: "12"
+        scope: RUN_TIME
+
+  # ── Python RAG Microservice ────────────────────────────────────────────────
+  - name: rag
+    source_dir: rag-service
+    github:
+      repo: YOUR_GITHUB_USERNAME/PotuPartners   # ← same repo
+      branch: main
+      deploy_on_push: true
+    dockerfile_path: rag-service/Dockerfile
+
+    http_port: 8000
+    instance_count: 1
+    instance_size_slug: apps-s-1vcpu-1gb
+
+    health_check:
+      http_path: /health
+      initial_delay_seconds: 45   # Python startup is slower
+      period_seconds: 30
+      timeout_seconds: 10
+      failure_threshold: 3
+
+    envs:
+      - key: RAG_SERVICE_SECRET
+        scope: RUN_TIME
+        type: SECRET
+
+# ─── Custom domain (uncomment after creating the app) ────────────────────────
+# domains:
+#   - domain: api.potupartners.site
+#     type: PRIMARY
+#     zone: potupartners.site
+#     component:
+#       name: api

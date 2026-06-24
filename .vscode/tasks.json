@@ -1,0 +1,167 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+
+    // ─── Frontend ─────────────────────────────────────────────────────────────
+    {
+      "label":   "Frontend: Dev Server",
+      "type":    "shell",
+      "command": "npm run dev",
+      "options": { "cwd": "${workspaceFolder}/frontend" },
+      "group":   "build",
+      "presentation": {
+        "panel":  "new",
+        "reveal": "always"
+      },
+      "isBackground": true,
+      "problemMatcher": "$tsc-watch"
+    },
+    {
+      "label":   "Frontend: Build (Static Export)",
+      "type":    "shell",
+      "command": "npm run build",
+      "options": { "cwd": "${workspaceFolder}/frontend" },
+      "group":   "build",
+      "problemMatcher": "$tsc"
+    },
+    {
+      "label":   "Frontend: Deploy to Hostinger",
+      "type":    "shell",
+      "command": "npm run build && rsync -avz --delete out/ ${HOSTINGER_USER}@${HOSTINGER_HOST}:/home/${HOSTINGER_USER}/public_html/",
+      "options": {
+        "cwd": "${workspaceFolder}/frontend",
+        "env": {
+          "HOSTINGER_USER": "${input:hostingerUser}",
+          "HOSTINGER_HOST": "${input:hostingerHost}"
+        }
+      },
+      "group":            "build",
+      "problemMatcher":   [],
+      "presentation": {
+        "panel":  "shared",
+        "reveal": "always",
+        "clear":  true
+      }
+    },
+
+    // ─── Backend ─────────────────────────────────────────────────────────────
+    {
+      "label":   "Backend: Dev Server",
+      "type":    "shell",
+      "command": "npm run dev",
+      "options": { "cwd": "${workspaceFolder}/backend" },
+      "group":   "build",
+      "presentation": {
+        "panel":  "new",
+        "reveal": "always"
+      },
+      "isBackground": true,
+      "problemMatcher": "$tsc-watch"
+    },
+    {
+      "label":   "Backend: Build",
+      "type":    "shell",
+      "command": "npm run build",
+      "options": { "cwd": "${workspaceFolder}/backend" },
+      "group":   "build",
+      "problemMatcher": "$tsc"
+    },
+    {
+      "label":   "Backend: Run Migrations",
+      "type":    "shell",
+      "command": "npm run migrate",
+      "options": { "cwd": "${workspaceFolder}/backend" },
+      "group":   "build",
+      "problemMatcher": []
+    },
+    {
+      "label":   "Backend: Deploy to DigitalOcean",
+      "type":    "shell",
+      "command": "rsync -avz --compress --delete --exclude='node_modules' --exclude='dist' --exclude='.env' backend/ ${DO_USER}@${DO_HOST}:/opt/potupartners/backend/ && ssh ${DO_USER}@${DO_HOST} 'cd /opt/potupartners/backend && npm ci --omit=dev && npm install -D typescript && npm run build && npm run migrate && pm2 reload potupartners-api && pm2 save'",
+      "options": {
+        "cwd": "${workspaceFolder}",
+        "env": {
+          "DO_USER": "${input:doUser}",
+          "DO_HOST": "${input:doHost}"
+        }
+      },
+      "group":          "build",
+      "problemMatcher": [],
+      "presentation": {
+        "panel":  "shared",
+        "reveal": "always",
+        "clear":  true
+      }
+    },
+
+    // ─── RAG Service ──────────────────────────────────────────────────────────
+    {
+      "label":   "RAG: Deploy to DigitalOcean",
+      "type":    "shell",
+      "command": "rsync -avz --compress --delete --exclude='venv' --exclude='chroma_db' --exclude='__pycache__' --exclude='.env' rag-service/ ${DO_USER}@${DO_HOST}:/opt/potupartners/rag-service/ && ssh ${DO_USER}@${DO_HOST} 'cd /opt/potupartners/rag-service && source venv/bin/activate && pip install -r requirements.txt -q && deactivate && pm2 reload potupartners-rag && pm2 save'",
+      "options": {
+        "cwd": "${workspaceFolder}",
+        "env": {
+          "DO_USER": "${input:doUser}",
+          "DO_HOST": "${input:doHost}"
+        }
+      },
+      "group":          "build",
+      "problemMatcher": []
+    },
+
+    // ─── Docker ───────────────────────────────────────────────────────────────
+    {
+      "label":   "Docker: Start Dev Stack",
+      "type":    "shell",
+      "command": "docker-compose up -d",
+      "options": { "cwd": "${workspaceFolder}" },
+      "group":   "build",
+      "problemMatcher": []
+    },
+    {
+      "label":   "Docker: Stop Dev Stack",
+      "type":    "shell",
+      "command": "docker-compose down",
+      "options": { "cwd": "${workspaceFolder}" },
+      "problemMatcher": []
+    },
+
+    // ─── DB ───────────────────────────────────────────────────────────────────
+    {
+      "label":   "DB: Open psql shell (local docker)",
+      "type":    "shell",
+      "command": "docker-compose exec postgres psql -U potuadmin -d potupartners",
+      "options": { "cwd": "${workspaceFolder}" },
+      "problemMatcher": []
+    }
+
+  ],
+
+  "inputs": [
+    {
+      "id":          "hostingerUser",
+      "type":        "promptString",
+      "description": "Hostinger SSH username (e.g. u123456789)",
+      "default":     "u123456789"
+    },
+    {
+      "id":          "hostingerHost",
+      "type":        "promptString",
+      "description": "Hostinger server IP or hostname",
+      "default":     "123.456.789.0"
+    },
+    {
+      "id":          "doUser",
+      "type":        "promptString",
+      "description": "DigitalOcean VPS SSH username",
+      "default":     "potupartners"
+    },
+    {
+      "id":          "doHost",
+      "type":        "promptString",
+      "description": "DigitalOcean VPS IP address",
+      "default":     "YOUR_DROPLET_IP"
+    }
+  ]
+}

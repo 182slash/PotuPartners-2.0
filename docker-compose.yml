@@ -1,0 +1,117 @@
+version: '3.9'
+
+# ─────────────────────────────────────────────────────────────────────────────
+# PotuPartners — Local Development Stack
+# Usage:
+#   docker-compose up -d                        # Start all services
+#   docker-compose up -d postgres               # DB only
+#   docker-compose logs -f potupartners-api     # Stream API logs
+#   docker-compose down -v                      # Stop + remove volumes
+# ─────────────────────────────────────────────────────────────────────────────
+
+services:
+
+  # ─── PostgreSQL ─────────────────────────────────────────────────────────────
+  postgres:
+    image: postgres:16-alpine
+    container_name: potu-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB:       potupartners
+      POSTGRES_USER:     potuadmin
+      POSTGRES_PASSWORD: potudevpassword   # Dev only — never use in production
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      # Run migrations automatically on first start
+      - ./backend/migrations:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U potuadmin -d potupartners"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  # ─── Node.js Express API ─────────────────────────────────────────────────────
+  potupartners-api:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+      target: production
+    container_name: potu-api
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      NODE_ENV:                development
+      PORT:                    4000
+      CORS_ORIGIN:             http://localhost:3000
+      DATABASE_URL:            postgresql://potuadmin:potudevpassword@postgres:5432/potupartners
+      JWT_ACCESS_SECRET:       dev_access_secret_at_least_32_characters_long
+      JWT_REFRESH_SECRET:      dev_refresh_secret_at_least_32_characters_long
+      JWT_ACCESS_EXPIRES_IN:   15m
+      JWT_REFRESH_EXPIRES_IN:  7d
+      DO_SPACES_KEY:           ${DO_SPACES_KEY}
+      DO_SPACES_SECRET:        ${DO_SPACES_SECRET}
+      DO_SPACES_ENDPOINT:      ${DO_SPACES_ENDPOINT:-https://sgp1.digitaloceanspaces.com}
+      DO_SPACES_BUCKET:        ${DO_SPACES_BUCKET}
+      DO_SPACES_CDN_URL:       ${DO_SPACES_CDN_URL}
+      RAG_SERVICE_URL:         http://rag-service:8000
+      RAG_SERVICE_SECRET:      dev_rag_secret_min_16_chars
+      BCRYPT_ROUNDS:           10       # Lower for faster dev
+      LOG_LEVEL:               debug
+    ports:
+      - "4000:4000"
+    volumes:
+      # For development: mount source with hot-reload (use ts-node-dev directly instead)
+      - ./backend/src:/app/src:ro
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://localhost:4000/health || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+
+  # ─── Python RAG Microservice ─────────────────────────────────────────────────
+  rag-service:
+    build:
+      context: ./rag-service
+      dockerfile: Dockerfile
+    container_name: potu-rag
+    restart: unless-stopped
+    environment:
+      RAG_SERVICE_SECRET:    dev_rag_secret_min_16_chars
+      OPENAI_API_KEY:        ${OPENAI_API_KEY}
+      LLM_MODEL:             gpt-4o
+      EMBEDDING_MODEL:       text-embedding-3-small
+      MAX_RETRIEVED_CHUNKS:  5
+      TEMPERATURE:           0.1
+      MAX_TOKENS:            1000
+      CHROMA_PERSIST_PATH:   /app/chroma_db
+      CHROMA_COLLECTION_NAME: potupartners_docs_dev
+      CHUNK_SIZE:            800
+      CHUNK_OVERLAP:         120
+      DO_SPACES_KEY:         ${DO_SPACES_KEY}
+      DO_SPACES_SECRET:      ${DO_SPACES_SECRET}
+      DO_SPACES_ENDPOINT:    ${DO_SPACES_ENDPOINT:-https://sgp1.digitaloceanspaces.com}
+      DO_SPACES_BUCKET:      ${DO_SPACES_BUCKET}
+      BACKEND_URL:           http://potupartners-api:4000
+      BACKEND_SERVICE_SECRET: dev_rag_secret_min_16_chars
+      LOG_LEVEL:             DEBUG
+    ports:
+      - "8000:8000"    # Exposed locally for debugging; not public in production
+    volumes:
+      - chroma_data:/app/chroma_db    # Persist vector store across restarts
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:8000/health || exit 1"]
+      interval: 20s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
+
+# ─── Named Volumes ─────────────────────────────────────────────────────────────
+volumes:
+  postgres_data:
+    name: potu_postgres_data
+  chroma_data:
+    name: potu_chroma_data

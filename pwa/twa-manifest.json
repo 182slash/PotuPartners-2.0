@@ -1,0 +1,61 @@
+{
+  "packageId":                 "com.potupartners.app",
+  "host":                      "potupartners.site",
+  "name":                      "PotuPartners",
+  "launcherName":              "PotuPartners",
+  "display":                   "standalone",
+  "themeColor":                "#000000",
+  "navigationColor":           "#000000",
+  "navigationColorDark":       "#000000",
+  "navigationDividerColor":    "#000000",
+  "navigationDividerColorDark":"#000000",
+  "backgroundColor":           "#000000",
+  "enableNotifications":       true,
+  "startUrl":                  "/",
+  "iconUrl":                   "https://potupartners.site/icons/icon-512.png",
+  "maskableIconUrl":           "https://potupartners.site/icons/icon-512.png",
+  "monochromeIconUrl":         "https://potupartners.site/icons/icon-512.png",
+  "splashScreenFadeOutDuration": 300,
+  "signingMode":               "local",
+  "fingerprints": [
+    {
+      "name":        "release",
+      "value":       "REPLACE_WITH_SHA256_CERT_FINGERPRINT_FROM_KEYTOOL"
+    }
+  ],
+  "appVersionName":  "1.0.0",
+  "appVersionCode":  1,
+  "shortcuts": [
+    {
+      "name":      "Chat",
+      "shortName": "Chat",
+      "url":       "/?chat=open",
+      "icons":     [{ "src": "https://potupartners.site/icons/icon-192.png", "sizes": "192x192" }]
+    }
+  ],
+  "webManifestUrl": "https://potupartners.site/manifest.json",
+  "generatorApp":   "bubblewrap-cli",
+  "generatorVersion": "1.21.1",
+
+  "_readme": {
+    "setup": [
+      "1. npm install -g @bubblewrap/cli",
+      "2. bubblewrap init --manifest https://potupartners.site/manifest.json",
+      "   (This generates the Android project from scratch using live manifest)",
+      "   OR: bubblewrap init --manifest ./pwa/twa-manifest.json --directory ./android",
+      "3. Generate a signing keystore:",
+      "   keytool -genkey -v -keystore potupartners-release.jks -alias potupartners -keyalg RSA -keysize 2048 -validity 10000",
+      "4. Get SHA256 fingerprint for assetlinks.json:",
+      "   keytool -list -v -keystore potupartners-release.jks -alias potupartners",
+      "   Copy the SHA256 value to fingerprints[0].value above AND to public/.well-known/assetlinks.json",
+      "5. bubblewrap build --skipPwaValidation",
+      "6. Output: app-release-signed.apk + app-release-bundle.aab",
+      "7. Upload app-release-bundle.aab to Google Play Console",
+      "   (AAB is required for new apps; APK is for direct sideload only)"
+    ],
+    "updates": [
+      "For content-only updates: push to Hostinger, PWA updates automatically",
+      "For shell/config changes: bump appVersionCode, run bubblewrap build, upload new AAB"
+    ]
+  }
+}
