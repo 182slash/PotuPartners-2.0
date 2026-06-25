@@ -51,7 +51,7 @@ export default function Footer() {
 
           {/* Practice Areas */}
           <div>
-            <h4 className="text-[0.65rem] tracking-[0.2em] uppercase text-pulse-gold font-medium mb-5">
+            <h4 className="text-[0.65rem] tracking-[0.2em] uppercase text-gold font-medium mb-5">
               Practice Areas
             </h4>
             <ul className="space-y-3">
@@ -67,7 +67,7 @@ export default function Footer() {
 
           {/* Navigation */}
           <div>
-            <h4 className="text-[0.65rem] tracking-[0.2em] uppercase text-pulse-gold font-medium mb-5">
+            <h4 className="text-[0.65rem] tracking-[0.2em] uppercase text-gold font-medium mb-5">
               Navigation
             </h4>
             <ul className="space-y-3">
@@ -88,21 +88,21 @@ export default function Footer() {
 
           {/* Contact */}
           <div>
-            <h4 className="text-[0.65rem] tracking-[0.2em] uppercase text-pulse-gold font-medium mb-5">
+            <h4 className="text-[0.65rem] tracking-[0.2em] uppercase text-gold font-medium mb-5">
               Contact
             </h4>
             <ul className="space-y-4">
               <li className="flex items-start gap-3">
                 <MapPin size={14} className="text-gold mt-0.5 flex-shrink-0" />
                 <span className="text-text-secondary text-sm leading-relaxed">
-                  <span className="block text-pulse-gold text-xs uppercase tracking-wide mb-0.5">Head Office</span>
+                  <span className="block text-gold text-xs uppercase tracking-wide mb-0.5">Head Office</span>
                   Ruko Mall 9K, Puncak CBD, Wiyung, Surabaya
                 </span>
               </li>
               <li className="flex items-start gap-3">
                 <MapPin size={14} className="text-gold mt-0.5 flex-shrink-0" />
                 <span className="text-text-secondary text-sm leading-relaxed">
-                  <span className="block text-pulse-gold text-xs uppercase tracking-wide mb-0.5">Branch Office</span>
+                  <span className="block text-gold text-xs uppercase tracking-wide mb-0.5">Branch Office</span>
                   Jl. Muria No. 25, Pasar Manggis<br />
                   Setiabudi, Jakarta Selatan
                 </span>
