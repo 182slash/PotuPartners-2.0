@@ -14,7 +14,7 @@ const Clients: React.FC = () => {
   ];
 
   return (
-    <section style={{ backgroundColor: '#000000' }} className="py-20">
+    <section style={{ backgroundColor: '#000000' }} className="py-20 hidden">
       <div className="container mx-auto text-center">
         {/* Outer div scrolls horizontally but allows vertical overflow for glow */}
         <div className="overflow-x-auto md:overflow-visible">

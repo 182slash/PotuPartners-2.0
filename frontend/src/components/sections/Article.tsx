@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useReveal } from '@/hooks/useReveal';
 import Image from 'next/image';
-import { X, Calendar, ArrowRight } from 'lucide-react';
+import { X, Calendar, ArrowRight, ChevronLeft, ChevronRight } from 'lucide-react';
 
 interface Article {
   id: number;
@@ -112,9 +112,16 @@ const ARTICLES: Article[] = [
 export default function ArticleSection() {
   const { ref: headRef, visible: headV } = useReveal<HTMLDivElement>();
   const { ref: gridRef, visible: gridV } = useReveal<HTMLDivElement>({ threshold: 0.05 });
+  const { ref: deskGridRef, visible: deskGridV } = useReveal<HTMLDivElement>({ threshold: 0.05 });
 
   const [activeId, setActiveId] = useState<number | null>(null);
   const active = ARTICLES.find(a => a.id === activeId) ?? null;
+
+  // Mobile carousel index (single-card view, < sm breakpoint)
+  const [slide, setSlide] = useState(0);
+  const prevSlide = () => setSlide(i => (i - 1 + ARTICLES.length) % ARTICLES.length);
+  const nextSlide = () => setSlide(i => (i + 1) % ARTICLES.length);
+  const current = ARTICLES[slide];
 
   // Lock body scroll while the article modal is open
   useEffect(() => {
@@ -153,17 +160,103 @@ export default function ArticleSection() {
           </p>
         </div>
 
-        {/* Article grid */}
+        {/* Mobile carousel — single card, < sm */}
         <div
           ref={gridRef}
-          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
+          className={`reveal ${gridV ? 'visible' : ''} sm:hidden`}
+        >
+          <button
+            key={current.id}
+            onClick={() => setActiveId(current.id)}
+            className="group text-left w-full border border-divider bg-surface-2 overflow-hidden transition-all duration-300 hover:border-gold-dim flex flex-col"
+          >
+            {/* Image */}
+            <div className="relative h-48 w-full overflow-hidden bg-surface-3">
+              <Image
+                src={current.image}
+                alt={current.title}
+                fill
+                className="object-cover transition-transform duration-700 group-hover:scale-105"
+                onError={e => { (e.currentTarget as HTMLImageElement).style.display = 'none'; }}
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/10 to-transparent" />
+              <span className="absolute bottom-3 left-3 px-2.5 py-1 bg-black/70 border border-gold-faint text-gold font-sans text-[0.65rem] tracking-[0.15em] uppercase">
+                {current.date}
+              </span>
+            </div>
+
+            {/* Content */}
+            <div className="p-5 flex flex-col">
+              <h3 className="font-serif font-light text-text-primary leading-snug text-base mb-2 group-hover:text-gold transition-colors duration-300">
+                {current.title}
+              </h3>
+
+              <div className="gold-rule w-8 mb-3" />
+
+              <p className="font-sans text-sm text-text-secondary font-light leading-relaxed mb-4 line-clamp-3">
+                {current.excerpt}
+              </p>
+
+              <div className="pt-3 border-t border-divider flex items-center justify-between gap-3">
+                <p className="font-sans text-[0.7rem] text-text-muted font-light leading-snug">
+                  {current.author}
+                  {current.role && <span className="block text-gold opacity-50 text-[0.65rem] mt-0.5">{current.role}</span>}
+                </p>
+                <span className="inline-flex items-center justify-center w-7 h-7 border border-divider text-text-muted group-hover:border-gold group-hover:text-gold transition-colors duration-300 flex-shrink-0">
+                  <ArrowRight size={12} />
+                </span>
+              </div>
+            </div>
+          </button>
+
+          {/* Controls: prev / dots / next */}
+          <div className="flex items-center justify-between mt-6">
+            <button
+              onClick={prevSlide}
+              className="w-9 h-9 border border-divider hover:border-gold flex items-center justify-center text-text-muted hover:text-gold transition-colors flex-shrink-0"
+              aria-label="Previous article"
+            >
+              <ChevronLeft size={16} />
+            </button>
+
+            <div className="flex items-center gap-2">
+              {ARTICLES.map((a, i) => (
+                <button
+                  key={a.id}
+                  onClick={() => setSlide(i)}
+                  aria-label={`Go to article ${i + 1}`}
+                  className={`h-1.5 rounded-full transition-all duration-300 ${
+                    i === slide ? 'w-6 bg-gold' : 'w-1.5 bg-divider'
+                  }`}
+                />
+              ))}
+            </div>
+
+            <button
+              onClick={nextSlide}
+              className="w-9 h-9 border border-divider hover:border-gold flex items-center justify-center text-text-muted hover:text-gold transition-colors flex-shrink-0"
+              aria-label="Next article"
+            >
+              <ChevronRight size={16} />
+            </button>
+          </div>
+
+          <p className="text-center font-sans text-xs text-text-muted mt-4">
+            {slide + 1} / {ARTICLES.length}
+          </p>
+        </div>
+
+        {/* Article grid — sm and up */}
+        <div
+          ref={deskGridRef}
+          className="hidden sm:grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
         >
           {ARTICLES.map((a, i) => (
             <button
               key={a.id}
               onClick={() => setActiveId(a.id)}
-              className={`reveal ${gridV ? 'visible' : ''} group text-left border border-divider bg-surface-2 overflow-hidden transition-all duration-300 hover:border-gold-dim hover:shadow-card-hover flex flex-col`}
-              style={{ transitionDelay: gridV ? `${i * 80}ms` : '0ms' }}
+              className={`reveal ${deskGridV ? 'visible' : ''} group text-left border border-divider bg-surface-2 overflow-hidden transition-all duration-300 hover:border-gold-dim hover:shadow-card-hover flex flex-col`}
+              style={{ transitionDelay: deskGridV ? `${i * 80}ms` : '0ms' }}
             >
               {/* Image */}
               <div className="relative h-48 w-full overflow-hidden bg-surface-3">
