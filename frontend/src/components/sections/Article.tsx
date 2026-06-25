@@ -283,6 +283,8 @@ export default function ArticleSection() {
                   {a.title}
                 </h3>
 
+                <div className="gold-rule w-0 group-hover:w-12 opacity-0 group-hover:opacity-70 transition-all duration-500 mb-3" />
+
                 <p className="font-sans text-sm text-text-secondary font-light leading-relaxed mb-5 line-clamp-3">
                   {a.excerpt}
                 </p>
