@@ -30,7 +30,7 @@ const ARTICLES: Article[] = [
     author:  'Immanuel Hendra, S.H.',
     role:    'Paralegal Potu and Partners Law Office',
     date:    '18 Mei 2026',
-    image:   '/article/Article01.png',
+    image:   '/Article/Article01.png',
   },
   {
     id: 2,
@@ -45,7 +45,7 @@ const ARTICLES: Article[] = [
     author:  'Nabila Purnamasasi, S.H.',
     role:    'Paralegal Potu and Partners Law Office',
     date:    '20 Mei 2026',
-    image:   '/article/Article02.png',
+    image:   '/Article/Article02.png',
   },
   {
     id: 3,
@@ -60,7 +60,7 @@ const ARTICLES: Article[] = [
     author:  'Emilia Lailatul Fitria, S.H.',
     role:    'Paralegal Potu and Partners Law Office',
     date:    '22 Mei 2026',
-    image:   '/article/Article03.png',
+    image:   '/Article/Article03.png',
   },
   {
     id: 4,
@@ -75,7 +75,7 @@ const ARTICLES: Article[] = [
     author:  'Reni Putri Anggraeni, S.H.',
     role:    'Paralegal Potu and Partners Law Office',
     date:    '25 Mei 2026',
-    image:   '/article/Article04.png',
+    image:   '/Article/Article04.png',
   },
   {
     id: 5,
@@ -90,7 +90,7 @@ const ARTICLES: Article[] = [
     author:  'Muhammad Azri Arrizki, S.H.',
     role:    'Paralegal Potu and Partners Law Office',
     date:    '26 Mei 2026',
-    image:   '/article/Article05.png',
+    image:   '/Article/Article05.png',
   },
   {
     id: 6,
@@ -105,7 +105,7 @@ const ARTICLES: Article[] = [
     author:  'Adrian Cakhalino, S.H.',
     role:    'Partner Potu and Partners Law Office',
     date:    '29 Mei 2026',
-    image:   '/article/Article06.png',
+    image:   '/Article/Article06.png',
   },
 ];
 
