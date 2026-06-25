@@ -5,8 +5,11 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
+const rawUrl = process.env['DATABASE_URL'] || '';
+const cleanUrl = rawUrl.replace(/(\?|&)sslmode=[^&]*/g, '');
+
 const pool = new Pool({
-  connectionString: process.env['DATABASE_URL'],
+  connectionString: cleanUrl,
   ssl: { rejectUnauthorized: false },
 });
 

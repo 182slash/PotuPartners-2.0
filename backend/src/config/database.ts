@@ -2,9 +2,12 @@ import { Pool, type PoolClient } from 'pg';
 import { env } from './env';
 import { logger } from '../utils/logger';
 
+const rawUrl = env.DATABASE_URL;
+const cleanUrl = rawUrl.replace(/(\?|&)sslmode=[^&]*/g, '');
+
 const pool = new Pool({
-  connectionString: env.DATABASE_URL,
-  ssl:              env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false,
+  connectionString: cleanUrl,
+  ssl:              { rejectUnauthorized: false },
   max:              20,
   idleTimeoutMillis: 30_000,
   connectionTimeoutMillis: 5_000,
