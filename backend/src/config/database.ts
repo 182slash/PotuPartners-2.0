@@ -2,19 +2,15 @@ import { Pool, type PoolClient } from 'pg';
 import { env } from './env';
 import { logger } from '../utils/logger';
 
-const rawUrl = env.DATABASE_URL;
-const cleanUrl = rawUrl.replace(/(\?|&)sslmode=[^&]*/g, '');
-
 const pool = new Pool({
-  connectionString: cleanUrl,
-  ssl:              { rejectUnauthorized: false },
+  connectionString: env.DATABASE_URL,
   max:              20,
   idleTimeoutMillis: 30_000,
   connectionTimeoutMillis: 5_000,
 });
 
 pool.on('connect', (client) => {
-  client.query('SET search_path TO app, public');
+  client.query('SET search_path TO public');
   logger.debug('New PostgreSQL connection established');
 });
 
