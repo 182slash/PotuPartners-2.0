@@ -96,6 +96,21 @@ body {
   animation: shimmer 3s linear infinite;
 }
 
+/* ─── Pulsing Gold Text Glow ──────────────────────────────────────────────────── */
+.text-pulse-gold {
+  color: #D4AF37;
+  animation: textPulseGold 2.8s ease-in-out infinite;
+}
+
+@keyframes textPulseGold {
+  0%, 100% {
+    text-shadow: 0 0 4px rgba(212, 175, 55, 0.25), 0 0 10px rgba(198, 167, 94, 0.12);
+  }
+  50% {
+    text-shadow: 0 0 14px rgba(212, 175, 55, 0.75), 0 0 28px rgba(198, 167, 94, 0.4);
+  }
+}
+
 /* ─── Gold Divider ───────────────────────────────────────────────────────────── */
 .gold-rule {
   height: 1px;
