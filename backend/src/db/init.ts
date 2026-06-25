@@ -4,8 +4,9 @@ import { logger } from '../utils/logger';
 export async function initDb(): Promise<void> {
   logger.info('Initializing database schema...');
 
-  await query(`GRANT ALL ON SCHEMA public TO current_user`);
-  await query(`CREATE EXTENSION IF NOT EXISTS "pgcrypto"`);
+  await query(`CREATE SCHEMA IF NOT EXISTS app`);
+  await query(`SET search_path TO app`);
+  await query(`CREATE EXTENSION IF NOT EXISTS "pgcrypto" SCHEMA app`);
 
   await query(`
     DO $$ BEGIN

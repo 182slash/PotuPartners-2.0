@@ -13,7 +13,8 @@ const pool = new Pool({
   connectionTimeoutMillis: 5_000,
 });
 
-pool.on('connect', () => {
+pool.on('connect', (client) => {
+  client.query('SET search_path TO app, public');
   logger.debug('New PostgreSQL connection established');
 });
 
