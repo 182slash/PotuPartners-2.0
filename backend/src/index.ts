@@ -63,13 +63,15 @@ app.use(cors({
     if (!origin || allowed.includes(origin)) {
       cb(null, true);
     } else {
-      cb(new Error(`CORS: Origin '${origin}' not permitted`));
+      cb(null, false);
     }
   },
   credentials:    true,
   methods:        ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization', 'X-Service-Secret'],
 }));
+
+app.options('*', cors());
 
 // ─── Rate limiting ────────────────────────────────────────────────────────────
 const generalLimiter = rateLimit({
