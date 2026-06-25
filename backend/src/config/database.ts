@@ -4,6 +4,7 @@ import { logger } from '../utils/logger';
 
 const pool = new Pool({
   connectionString: env.DATABASE_URL,
+  ssl: { rejectUnauthorized: false },
   max:              20,
   idleTimeoutMillis: 30_000,
   connectionTimeoutMillis: 5_000,
