@@ -63,7 +63,7 @@ export default function AuthGate() {
         }
       </p>
 
-      <form onSubmit={handleSubmit} className="w-full space-y-4">
+      <form className="w-full space-y-4">
 
         {mode === 'register' && (
           <div>
@@ -122,7 +122,8 @@ export default function AuthGate() {
         </div>
 
         <button
-          type="submit"
+          type="button"
+          onClick={handleSubmit}
           disabled={loading}
           className={cn(
             'btn-gold btn-gold-fill w-full justify-center mt-2',
