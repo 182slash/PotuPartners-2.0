@@ -1,5 +1,4 @@
 import 'dotenv/config';
-import http       from 'http';
 import express    from 'express';
 import http       from 'http';
 import path       from 'path';
@@ -11,7 +10,8 @@ import compression   from 'compression';
 import cookieParser  from 'cookie-parser';
 import rateLimit     from 'express-rate-limit';
 
-import { env }              from './config/env';
+import { env }               from './config/env';
+import { checkDbConnection } from './config/database';
 import { initDb }            from './db/init';
 import { logger, httpLogStream } from './utils/logger';
 import { globalErrorHandler, notFoundHandler } from './utils/errors';
