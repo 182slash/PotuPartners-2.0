@@ -52,7 +52,7 @@ services:
       failure_threshold: 3
 
     # Run DB migrations then start the server
-    run_command: sh -c "node dist/db/migrate.js && node dist/index.js"
+    run_command: node dist/index.js
 
     # ── Persistent volume for file uploads (replaces DO Spaces) ──────────
     # Files are stored on this disk and served directly by the API.

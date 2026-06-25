@@ -1,4 +1,5 @@
 import 'dotenv/config';
+import http       from 'http';
 import express    from 'express';
 import http       from 'http';
 import path       from 'path';
@@ -11,7 +12,7 @@ import cookieParser  from 'cookie-parser';
 import rateLimit     from 'express-rate-limit';
 
 import { env }              from './config/env';
-import { checkDbConnection } from './config/database';
+import { initDb }            from './db/init';
 import { logger, httpLogStream } from './utils/logger';
 import { globalErrorHandler, notFoundHandler } from './utils/errors';
 
@@ -188,6 +189,7 @@ process.on('unhandledRejection', (reason) => {
 async function bootstrap() {
   try {
     await checkDbConnection();
+    await initDb();
 
     server.listen(env.PORT, () => {
       logger.info(`🚀  PotuPartners API running on port ${env.PORT}`, {
