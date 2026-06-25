@@ -1,4 +1,3 @@
-import Link from 'next/link';
 import { Mail, Phone, MapPin, Facebook, Instagram, Twitter, Linkedin } from 'lucide-react';
 
 const SOCIALS = [
@@ -25,7 +24,10 @@ export default function Footer() {
                 POTU
               </div>
               <div className="font-serif text-[0.6rem] tracking-[0.5em] text-gold font-light mt-0.5">
-                PARTNERS
+                & PARTNERS
+              </div>
+              <div className="font-serif text-[0.6rem] tracking-[0.4em] text-text-secondary font-light mt-0.5">
+                LAW OFFICE
               </div>
             </div>
             <p className="text-text-secondary text-sm leading-relaxed font-light">
@@ -53,7 +55,7 @@ export default function Footer() {
               Practice Areas
             </h4>
             <ul className="space-y-3">
-              {['Corporate Law', 'Litigation', 'Mergers & Acquisitions', 'Arbitration', 'Regulatory Affairs', 'Real Estate'].map(item => (
+              {['Litigation', 'Corporate & Business Law', 'Dispute Resolution', 'Merger & Acquisition', 'Real Estate & Construction Law', 'Banking & Finance Law', 'Intellectual Property Rights Law', 'Immigration & International Law'].map(item => (
                 <li key={item}>
                   <a href="#services" className="text-text-secondary text-sm hover:text-gold transition-colors duration-200">
                     {item}
@@ -93,8 +95,16 @@ export default function Footer() {
               <li className="flex items-start gap-3">
                 <MapPin size={14} className="text-gold mt-0.5 flex-shrink-0" />
                 <span className="text-text-secondary text-sm leading-relaxed">
-                  Ruko Mall 9K Puncak CBD, Jl. Keramat<br />
-                  Surabaya, Jawa Timur
+                  <span className="block text-text-muted text-xs uppercase tracking-wide mb-0.5">Head Office</span>
+                  Ruko Mall 9K, Puncak CBD, Wiyung, Surabaya
+                </span>
+              </li>
+              <li className="flex items-start gap-3">
+                <MapPin size={14} className="text-gold mt-0.5 flex-shrink-0" />
+                <span className="text-text-secondary text-sm leading-relaxed">
+                  <span className="block text-text-muted text-xs uppercase tracking-wide mb-0.5">Branch Office</span>
+                  Jl. Muria No. 25, Pasar Manggis<br />
+                  Setiabudi, Jakarta Selatan
                 </span>
               </li>
               <li className="flex items-center gap-3">
