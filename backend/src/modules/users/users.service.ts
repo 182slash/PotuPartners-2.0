@@ -8,7 +8,7 @@ import type { DBUser, PublicUser } from '../../types';
 export async function getStaff(): Promise<PublicUser[]> {
   const { rows } = await query<DBUser>(
     `SELECT * FROM users
-     WHERE role IN ('associate', 'partner')
+     WHERE role IN ('associate', 'partner', 'admin')
        AND is_active = true
      ORDER BY display_order ASC, full_name ASC`
   );
