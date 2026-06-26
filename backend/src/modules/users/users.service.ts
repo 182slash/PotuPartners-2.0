@@ -10,7 +10,7 @@ export async function getStaff(): Promise<PublicUser[]> {
     `SELECT * FROM users
      WHERE role IN ('associate', 'partner')
        AND is_active = true
-     ORDER BY role DESC, full_name ASC`
+     ORDER BY display_order ASC, full_name ASC`
   );
   return rows.map(toPublicUser);
 }

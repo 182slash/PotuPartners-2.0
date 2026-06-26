@@ -1,16 +1,17 @@
-import axios from 'axios';
+import OpenAI from 'openai';
 import { query } from '../../config/database';
 import { createMessage } from '../messages/messages.service';
 import { Errors } from '../../utils/errors';
 import { env } from '../../config/env';
-import { logger } from '../../utils/logger';
 import type { DBMessage } from '../../types';
 
 export interface AiQueryResult {
-  answer:  string;
-  sources: Array<{ docTitle: string; chunkIndex: number; score: number }>;
+  answer:    string;
+  sources:   Array<{ docTitle: string; chunkIndex: number; score: number }>;
   messageId: string;
 }
+
+const openai = new OpenAI({ apiKey: env.OPENAI_API_KEY });
 
 // ─── Main AI query handler ────────────────────────────────────────────────────
 export async function queryAi(
@@ -47,42 +48,48 @@ export async function queryAi(
   const history = historyRows
     .reverse()
     .map(m => ({
-      role:    m.sender_id ? 'user' : 'assistant',
+      role:    m.sender_id ? 'user' as const : 'assistant' as const,
       content: m.content ?? '',
     }));
 
-  // 4. Call RAG microservice
-  let ragResponse: { answer: string; sources: AiQueryResult['sources'] };
+  // 4. Call OpenAI
+  let answer: string;
 
   try {
-    const { data } = await axios.post(
-      `${env.RAG_SERVICE_URL}/query`,
-      { question: userMessage, history },
-      {
-        headers: { 'X-Service-Secret': env.RAG_SERVICE_SECRET },
-        timeout: 60_000,
-      }
-    );
-    ragResponse = data;
+    const completion = await openai.chat.completions.create({
+      model: 'gpt-4o-mini',
+      messages: [
+        {
+          role: 'system',
+          content: `You are a professional legal assistant for Potu & Partners Law Office, an Indonesian legal firm. 
+You help clients with general legal inquiries, explain legal processes, and guide them on how the firm can assist them.
+Be professional, concise, and empathetic. Always recommend consulting directly with one of the firm's lawyers for specific legal advice.
+Respond in the same language the client uses (Indonesian or English).`,
+        },
+        ...history,
+        { role: 'user', content: userMessage },
+      ],
+      max_tokens: 500,
+      temperature: 0.7,
+    });
+
+    answer = completion.choices[0]?.message?.content
+      ?? "I'm sorry, I couldn't generate a response. Please try again.";
   } catch (err) {
-    logger.error('RAG service query failed', { error: (err as Error).message });
-    ragResponse = {
-      answer:  "I'm sorry, I'm currently unavailable. Please contact one of our associates directly for assistance.",
-      sources: [],
-    };
+    answer = "I'm sorry, I'm currently unavailable. Please contact one of our associates directly for assistance.";
   }
 
   // 5. Persist AI response
   const aiMessage = await createMessage({
     conversationId,
-    senderId:    null,   // null sender = AI bot
-    content:     ragResponse.answer,
+    senderId:    null,
+    content:     answer,
     messageType: 'ai_response',
   });
 
   return {
-    answer:    ragResponse.answer,
-    sources:   ragResponse.sources,
+    answer,
+    sources:   [],
     messageId: aiMessage.id,
   };
 }

@@ -27,6 +27,9 @@ const envSchema = z.object({
   RAG_SERVICE_URL:    z.string().url().default('http://localhost:8000'),
   RAG_SERVICE_SECRET: z.string().min(16, 'RAG_SERVICE_SECRET must be ≥ 16 chars'),
 
+  // ── OpenAI ───────────────────────────────────────────────────────────────
+  OPENAI_API_KEY: z.string().min(1, 'OPENAI_API_KEY is required'),
+
   // ── Logging ──────────────────────────────────────────────────────────────
   LOG_LEVEL: z.enum(['error', 'warn', 'info', 'debug']).default('info'),
 
