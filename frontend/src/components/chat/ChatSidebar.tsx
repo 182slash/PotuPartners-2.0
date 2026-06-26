@@ -39,8 +39,12 @@ export default function ChatSidebar() {
           const isActive  = conv.id === activeId;
           const unread    = unreadCounts[conv.id] ?? 0;
           const isAi      = conv.isAiChat;
-          const other     = conv.clientId === currentUser?.id ? conv.participant : conv.client;
-          const name      = isAi ? 'AI Assistant' : (other?.displayName ?? other?.fullName ?? 'Unknown');
+const currentId = currentUser?.id;
+const isClient  = conv.clientId === currentId || (conv as any).client_id === currentId;
+const other     = isAi ? null : (isClient ? conv.participant : conv.client);
+const name      = isAi
+  ? 'AI Assistant'
+  : (other?.displayName ?? other?.fullName ?? 'Unknown');
           const lastMsg   = conv.lastMessage?.content;
           const lastTime  = formatConversationTime(conv.lastMessageAt);
 
