@@ -38,7 +38,7 @@ export default function ChatSidebar() {
         {conversations.map(conv => {
           const isActive  = conv.id === activeId;
           const unread    = unreadCounts[conv.id] ?? 0;
-          const isAi      = conv.isAiChat;
+          const isAi      = conv.isAiChat || (conv as any).is_ai_chat;
 const currentId = currentUser?.id;
 const isClient  = conv.clientId === currentId || (conv as any).client_id === currentId;
 const other     = isAi ? null : (isClient ? conv.participant : conv.client);

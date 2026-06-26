@@ -21,8 +21,8 @@ export default function ContactSelector() {
     loadConversations();
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
-  const associates = staff.filter(s => s.role === 'associate');
-  const partners   = staff.filter(s => s.role === 'partner');
+  const associates = staff.filter(s => s.role === 'associate' && s.email !== 'ai@potupartners.site');
+  const partners   = staff.filter(s => s.role === 'partner' && s.email !== 'ai@potupartners.site');
 
   const selectContact = async (id: string | null, isAi: boolean) => {
     await openConversation(id, isAi);

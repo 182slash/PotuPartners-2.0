@@ -22,14 +22,13 @@ export function useChat() {
 
   // ─── Load staff list for contact selector ────────────────────────────────
   const loadStaff = useCallback(async () => {
-    if (staffCount > 0) return;
     try {
       const { data } = await userService.getStaff();
       useChatStore.getState().setStaff(data.data);
     } catch {
       // Non-critical: silently fail
     }
-  }, [staffCount]);
+  }, []);
 
   // ─── Load all conversations for current user ──────────────────────────────
   const loadConversations = useCallback(async () => {
