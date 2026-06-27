@@ -2,38 +2,40 @@
 export type UserRole = 'client' | 'associate' | 'partner' | 'admin';
 
 export interface DBUser {
-  id:           string;
-  email:        string;
+  id:            string;
+  email:         string;
   password_hash: string;
-  full_name:    string;
-  display_name: string | null;
-  role:         UserRole;
-  avatar_url:   string | null;
-  title:        string | null;
-  bio:          string | null;
-  specialty:    string | null;
-  linkedin_url: string | null;
-  is_online:    boolean;
-  last_seen:    Date | null;
-  is_active:    boolean;
-  created_at:   Date;
-  updated_at:   Date;
+  full_name:     string;
+  display_name:  string | null;
+  role:          UserRole;
+  avatar_url:    string | null;
+  title:         string | null;
+  bio:           string | null;
+  specialty:     string | null;
+  linkedin_url:  string | null;
+  is_online:     boolean;
+  last_seen:     Date | null;
+  is_active:     boolean;
+  created_at:    Date;
+  updated_at:    Date;
+  display_order: number | null;
 }
 
 export interface PublicUser {
-  id:          string;
-  email:       string;
-  fullName:    string;
-  displayName: string | null;
-  role:        UserRole;
-  avatarUrl:   string | null;
-  title:       string | null;
-  bio:         string | null;
-  specialty:   string | null;
-  linkedinUrl: string | null;
-  isOnline:    boolean;
-  lastSeen:    Date | null;
-  createdAt:   Date;
+  id:           string;
+  email:        string;
+  fullName:     string;
+  displayName:  string | null;
+  role:         UserRole;
+  avatarUrl:    string | null;
+  title:        string | null;
+  bio:          string | null;
+  specialty:    string | null;
+  linkedinUrl:  string | null;
+  isOnline:     boolean;
+  lastSeen:     Date | null;
+  createdAt:    Date;
+  displayOrder: number | null;
 }
 
 // ─── Auth ─────────────────────────────────────────────────────────────────────
