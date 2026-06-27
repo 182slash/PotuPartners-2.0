@@ -21,8 +21,12 @@ export default function ContactSelector() {
     loadConversations();
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
-  const associates = staff.filter(s => s.role === 'associate' && s.fullName !== 'PotuPartners AI');
-const partners   = staff.filter(s => s.role === 'partner' && s.fullName !== 'PotuPartners AI');
+  const associates = staff
+  .filter(s => s.role === 'associate' && s.fullName !== 'PotuPartners AI')
+  .sort((a, b) => (a.displayOrder ?? 99) - (b.displayOrder ?? 99));
+const partners = staff
+  .filter(s => s.role === 'partner' && s.fullName !== 'PotuPartners AI')
+  .sort((a, b) => (a.displayOrder ?? 99) - (b.displayOrder ?? 99));
 
   const selectContact = async (id: string | null, isAi: boolean) => {
     await openConversation(id, isAi);

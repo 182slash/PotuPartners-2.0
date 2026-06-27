@@ -63,18 +63,19 @@ import type { DBUser, PublicUser } from '../types';
 
 export function toPublicUser(user: DBUser): PublicUser {
   return {
-    id:          user.id,
-    email:       user.email,
-    fullName:    user.full_name,
-    displayName: user.display_name,
-    role:        user.role,
-    avatarUrl:   user.avatar_url,
-    title:       user.title,
-    bio:         user.bio,
-    specialty:   user.specialty,
-    linkedinUrl: user.linkedin_url,
-    isOnline:    user.is_online,
-    lastSeen:    user.last_seen,
-    createdAt:   user.created_at,
+    id:           user.id,
+    email:        user.email,
+    fullName:     user.full_name,
+    displayName:  user.display_name,
+    role:         user.role,
+    avatarUrl:    user.avatar_url,
+    title:        user.title,
+    bio:          user.bio,
+    specialty:    user.specialty,
+    linkedinUrl:  user.linkedin_url,
+    isOnline:     user.is_online,
+    lastSeen:     user.last_seen,
+    createdAt:    user.created_at,
+    displayOrder: user.display_order,
   };
 }

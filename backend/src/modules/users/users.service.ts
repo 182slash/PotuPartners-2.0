@@ -4,7 +4,7 @@ import { Errors } from '../../utils/errors';
 import { v4 as uuidv4 } from 'uuid';
 import type { DBUser, PublicUser } from '../../types';
 
-// ─── List staff (associates + partners) for contact selector ──────────────────
+// ─── List staff (associates + partners + admin) for contact selector ──────────
 export async function getStaff(): Promise<PublicUser[]> {
   const { rows } = await query<DBUser>(
     `SELECT * FROM users

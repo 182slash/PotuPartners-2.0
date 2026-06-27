@@ -151,6 +151,7 @@ export interface StaffMember {
   avatarUrl: string | null;
   isOnline: boolean;
   specialty?: string;
+  displayOrder?: number;
 }
 
 // ─── Partners (public profile) ────────────────────────────────────────────────
