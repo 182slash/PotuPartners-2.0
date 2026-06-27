@@ -14,7 +14,7 @@ WORKDIR /app
 COPY package.json package-lock.json ./
 
 # Install ALL dependencies (including devDependencies for build)
-RUN npm ci
+RUN npm ci --legacy-peer-deps
 
 # Copy source code
 COPY tsconfig.json ./
@@ -37,7 +37,7 @@ WORKDIR /app
 COPY package.json package-lock.json ./
 
 # Install production dependencies only
-RUN npm ci --omit=dev && \
+RUN npm ci --omit=dev --legacy-peer-deps && \
     npm cache clean --force
 
 # Copy compiled output from builder stage
