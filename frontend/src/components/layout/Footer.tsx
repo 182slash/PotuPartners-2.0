@@ -127,7 +127,7 @@ export default function Footer() {
         <div className="pt-8 flex flex-col md:flex-row items-center justify-between gap-4">
           <div className="flex flex-wrap items-center justify-center md:justify-start gap-x-1 gap-y-1 text-text-muted text-xs tracking-wide">
             <span>© {year} PotuPartners. All rights reserved. | Powered by</span>
-            <a href="https://torchengineer.comm" target="_blank" rel="noopener noreferrer">
+            <a href="https://torchengineer.com" target="_blank" rel="noopener noreferrer">
               <img src="/torch-logo.png" alt="Torch Logo" className="h-[1.05rem] w-auto opacity-80 hover:opacity-100 transition-opacity duration-200" />
             </a>
           </div>
